@@ -1,0 +1,52 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: demo-pub
+  annotations:
+    run.googleapis.com/launch-stage: BETA
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/container-dependencies: "{app:[collector]}"
+        run.googleapis.com/vpc-access-connector: "vpc-connector-serverless"
+        run.googleapis.com/vpc-access-egress: "private-ranges-only"
+    spec:
+      containers:
+      - image: us-east4-docker.pkg.dev/propi-dev/go-api-develop/marketplace:v25
+        name: app
+        ports:
+        - containerPort: 8080
+        env:
+        - name: "OTEL_EXPORTER_OTLP_ENDPOINT"
+          value: "http://localhost:4318"
+        - name: "OTEL_SERVICE_NAME"
+          value: "trace-api"
+        - name: "OTEL_GO_X_EXEMPLAR"
+          value: "true"
+        - name: "TRIGGER_TYPE"
+          value: "pubsub"
+        - name: "PUBSUB_SUBSCRIPTION"
+          value: "demo-sub"
+        - name: "GOOGLE_CLOUD_PROJECT"
+          value: "propi-dev"
+        - name: "MONGO_URI"
+          value: $MONGO_URI
+        - name: "DB_CONTEXT"
+          value: "mongo"
+        - name: "DB_NAME"
+          value: "demo-mongo"
+        - name: "NOTIFICATION_CHANNEL"
+          value: "slack"
+        - name: "SLACK_WEBHOOK"
+          value: $SLACK_WEBHOOK
+        - name: "CACHE_TYPE"
+          value: "redis"
+        - name: "REDIS_HOST"
+          value: $REDIS_HOST
+      - image: us-east4-docker.pkg.dev/propi-dev/go-api-develop/collector:v4
+        name: collector
+        startupProbe:
+          httpGet:
+            path: /
+            port: 13133
