@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	marketplace_domain "demo/api/marketplace/domain"
+	tasks_domain "demo/api/tasks/domain"
 	mongo_db "demo/db/mongo"
 	"errors"
 	"fmt"
@@ -12,6 +13,7 @@ import (
 type Database interface {
 	Insert(result interface{}, collection string) error
 	Select(collection string) ([]marketplace_domain.Message, error)
+	SelectTasks(collection string) ([]tasks_domain.Task, error)
 }
 
 func NewDatabase(ctx context.Context) (Database, error) {
