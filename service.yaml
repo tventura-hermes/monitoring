@@ -31,7 +31,7 @@ spec:
         - name: "GOOGLE_CLOUD_PROJECT"
           value: "propi-dev"
         - name: "MONGO_URI"
-          value: "mongodb+srv://go-user:LZlQRm2SF3qd1hYU@cluster-demo.bhk8l.mongodb.net/?retryWrites=true&w=majority&appName=Cluster-demo"
+          value: "MONGO_URI"
         - name: "DB_CONTEXT"
           value: "mongo"
         - name: "DB_NAME"
